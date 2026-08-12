@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "faithblock",
+    "name": "FaithBlock",
     "slug": "faithblock",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "faithblock",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
@@ -15,10 +16,22 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.anonymous.faithblock"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "99281e8c-bbb2-496c-b403-a50590afb10b"
+      }
+    },
+    "owner": "rsu-tracker"
   }
 }
