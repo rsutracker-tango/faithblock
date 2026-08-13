@@ -10,6 +10,10 @@ import Purchases, { LOG_LEVEL, CustomerInfo, PurchasesPackage, PurchasesConfigur
  *    app.revenuecat.com -> Project Settings -> API Keys -> Production
  *    (Android: "goog_..."  iOS: "appl_...")
  *  - Expo Go only supports a dummy key; real payments need a dev build.
+ *
+ * NOTE: RevenueCat blocks TEST keys in release builds (the app is force-closed).
+ * Until production keys are set, we skip configuration entirely so the app
+ * runs normally with payments effectively disabled.
  */
 export const REVENUECAT_ANDROID_KEY = 'test_aCpPwbqBigsEFIsiwWkPujmjEOE';
 export const REVENUECAT_IOS_KEY = 'test_aCpPwbqBigsEFIsiwWkPujmjEOE';
@@ -17,8 +21,18 @@ export const REVENUECAT_IOS_KEY = 'test_aCpPwbqBigsEFIsiwWkPujmjEOE';
 /** MUST match the entitlement you create in the RevenueCat dashboard. */
 export const ENTITLEMENT_ID = 'premium';
 
+/** True when a real (non-test, non-placeholder) API key is configured. */
+export function isRevenueCatConfigured(): boolean {
+  const key = Platform.OS === 'ios' ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
+  return !!key && !key.startsWith('test_') && !key.includes('REPLACE');
+}
+
 /** Call once at app startup (in root layout) before rendering paywalled UI. */
 export async function configureRevenueCat(): Promise<void> {
+  if (!isRevenueCatConfigured()) {
+    console.warn('RevenueCat skipped: no production API key set yet.');
+    return;
+  }
   try {
     const key = Platform.OS === 'ios' ? REVENUECAT_IOS_KEY : REVENUECAT_ANDROID_KEY;
     await Purchases.setLogLevel(LOG_LEVEL.INFO);
